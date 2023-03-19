@@ -1,7 +1,8 @@
 from sys import argv
-from os import path
+from os import path, remove
 from list import get_node_versions
 from urllib import request, error
+from consts import github_repo_link
 import tarfile
 
 temp_file_name = "temp.tar.gz"
@@ -27,10 +28,13 @@ def install_node_version():
                 print(f"HTTP call failed. Error: {str(err)}")
             exit()
         except:
-            print("An error occured, try again. If it doesn't work, make sure to raise an issue on github")
+            print(f"An error occured, try again. If it doesn't work, make sure to raise an issue on github: {github_repo_link}")
             exit()
 
         tar = tarfile.open(temp_file_name)
         tar.extractall(path.expanduser("~/node/"))
         tar.close()
+        remove(temp_file_name)
+
         print(f"Node {version_number} successfully installed. Use nvm -u {version_number} to use it.")
+        exit()

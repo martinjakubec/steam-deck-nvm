@@ -2,6 +2,8 @@ from sys import argv
 from list import list_node_versions
 from use import use_node_version
 from install import install_node_version
+from remove import remove_node_version
+from help import show_help
 
 def main():
     if (len(argv) > 1):
@@ -10,13 +12,15 @@ def main():
                 list_node_versions()   
             case ('use' | '-u'):
                 use_node_version()
-            case ('install' | 'i'):
+            case ('install' | '-i'):
                 install_node_version()
             case ('remove' | '-r'):
-                print('should remove a version')
+                remove_node_version()
+            case ('help' | '-h'):
+                show_help()
             case _:
-                print('should show help with command not found')
+                print(f"Command '{argv[1]}' not found. Use nvm help or nvm -h to show help.")
     else:
-        print('should show default help')
+        show_help()
 
 main()
