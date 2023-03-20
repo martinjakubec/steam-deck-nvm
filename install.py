@@ -4,6 +4,7 @@ from list import get_node_versions
 from urllib import request, error
 from consts import github_repo_link
 import tarfile
+import json
 
 temp_file_name = "temp.tar.gz"
 
@@ -12,12 +13,21 @@ def install_node_version():
         print("Version argument is also needed.")
         exit()
     version_number = argv[2]
+    if version_number == 'latest':
+        url = request.urlopen(f"https://nodejs.org/download/release/index.json")
+        data = json.load(url)
+        version_number = data[0]['version'][1:]
+    if version_number == 'lts':
+        url = request.urlopen(f"https://nodejs.org/download/release/index.json")
+        data = json.load(url)
+        filtered_version = filter(lambda version: version['lts'] != False, data)
+        version_number = next(filtered_version)['version'][1:]
     if (get_node_versions().count(version_number) != 0):
         print(f"Version {version_number} already installed. Use nvm -u {version_number} to use it.")
         exit()
     else:
-        print(f"Should install version {version_number}")
         try:
+            print(f"Installing version {version_number}...")
             (path_to_file, data) = request.urlretrieve(
                 f"https://nodejs.org/download/release/v{version_number}/node-v{version_number}-linux-x64.tar.gz", temp_file_name
             )
